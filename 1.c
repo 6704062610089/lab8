@@ -5,7 +5,7 @@
 
 int checkscore(char std[]);
 int countCorrectQ1(char ans[][10], int nStd, char keys[]);
-
+int findHardestQuestion(char ans[][10], int nStd, char keys[], int correctCount[]);
 char keys[Q] = {'D','B','D','C','C','D','A','E','A','D'};
 
 int checkscore(char std[]) {
@@ -32,15 +32,45 @@ int main() {
         printf("std %d => %d\n", i + 1, checkscore(ans[i]));
     }
 	printf("Correct Q1 = %d\n", countCorrectQ1(ans, 8, keys));
+	int correctCount[10];
+    int hardest = findHardestQuestion(ans, 8, keys, correctCount);
+
+printf("Hardest question(s): ");
+for (int q = 0; q < 10; q++) {
+    if (correctCount[q] == correctCount[hardest]) {
+        printf("%d ", q + 1); 
+    }
+}
+printf("(correct %d people)\n", correctCount[hardest]);
+
     return 0;
 }
 int countCorrectQ1(char ans[][10], int nStd, char keys[]) {
     int count = 0;
     for (int i = 0; i < nStd; i++) {
-        if (ans[i][0] == keys[0]) { // ข้อ 1 = index 0
+        if (ans[i][0] == keys[0]) { 
             count++;
         }
     }
     return count;
+}
+int findHardestQuestion(char ans[][10], int nStd, char keys[], int correctCount[]) {
+  
+    for (int q = 0; q < 10; q++) correctCount[q] = 0;
+
+    for (int i = 0; i < nStd; i++) {
+        for (int q = 0; q < 10; q++) {
+            if (ans[i][q] == keys[q]) correctCount[q]++;
+        }
+    }
+    int min = correctCount[0];
+    int hardest = 0;
+    for (int q = 1; q < 10; q++) {
+        if (correctCount[q] < min) {
+            min = correctCount[q];
+            hardest = q;
+        }
+    }
+    return hardest; 
 }
 
